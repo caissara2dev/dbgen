@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Geradores de Dados (Clientes e Compras)</title>
+    <style>
+      :root { --fg: #1f2937; --bg: #f9fafb; --acc: #2563eb; --muted: #6b7280; }
+      html, body { margin: 0; padding: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; color: var(--fg); background: var(--bg); }
+      .wrap { max-width: 920px; margin: 32px auto; padding: 0 16px; }
+      h1 { font-size: 22px; margin: 0 0 16px; }
+      h2 { font-size: 18px; margin: 24px 0 12px; }
+      p  { color: var(--muted); }
+      form { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px 16px; }
+      label { display: block; font-size: 13px; color: #374151; margin-bottom: 4px; }
+      input[type="text"], input[type="number"], input[type="date"], input[type="file"] { width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; }
+      .hint { font-size: 12px; color: var(--muted); }
+      .actions { margin-top: 12px; }
+      button { background: var(--acc); color: #fff; border: 0; border-radius: 6px; padding: 10px 14px; font-size: 14px; cursor: pointer; }
+      button:hover { filter: brightness(0.95); }
+      .card-title { font-weight: 600; margin-bottom: 8px; }
+      .note { font-size: 12px; color: var(--muted); margin-top: 4px; }
+      .two { display: grid; gap: 16px; grid-template-columns: 1fr; }
+      @media (min-width: 920px) { .two { grid-template-columns: 1fr 1fr; } }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Geradores de Dados</h1>
+      <p>Gere clientes e compras (CSV e XLSX). O download virá como um arquivo ZIP.</p>
+      <div class="two">
+        <section>
+          <div class="card-title">Clientes</div>
+          <form method="post" action="generate/clients">
+            <div class="grid">
+              <div>
+                <label for="count">Quantidade</label>
+                <input id="count" name="count" type="number" min="1" max="50000" value="200" required />
+                <div class="hint">Máx: 50.000</div>
+              </div>
+              <div>
+                <label for="domain">Domínio do e-mail</label>
+                <input id="domain" name="domain" type="text" value="example.com" />
+                <div class="hint">ex.: empresa.com.br</div>
+              </div>
+              <div>
+                <label for="seed">Seed (opcional)</label>
+                <input id="seed" name="seed" type="number" placeholder="opcional" />
+                <div class="hint">Para resultados (aprox.) reprodutíveis</div>
+              </div>
+            </div>
+            <div class="actions">
+              <button type="submit">Gerar Clientes (ZIP)</button>
+            </div>
+            <div class="note">Saída: clientes_ficticios.csv e clientes_ficticios.xlsx</div>
+          </form>
+        </section>
+
+        <section>
+          <div class="card-title">Compras</div>
+          <form method="post" action="generate/purchases" enctype="multipart/form-data">
+            <div class="grid">
+              <div style="grid-column: 1 / -1">
+                <label for="clients_csv">Clientes (CSV)</label>
+                <input id="clients_csv" name="clients_csv" type="file" accept=".csv,text/csv" required />
+                <div class="hint">Deve conter a coluna CódigoCliente</div>
+              </div>
+              <div>
+                <label for="rows">Linhas</label>
+                <input id="rows" name="rows" type="number" min="1" max="200000" value="5000" />
+                <div class="hint">Máx: 200.000</div>
+              </div>
+              <div>
+                <label for="valor_min">Valor mín.</label>
+                <input id="valor_min" name="valor_min" type="number" step="0.01" value="50" />
+              </div>
+              <div>
+                <label for="valor_max">Valor máx.</label>
+                <input id="valor_max" name="valor_max" type="number" step="0.01" value="2000" />
+              </div>
+              <div>
+                <label for="inicio">Início</label>
+                <input id="inicio" name="inicio" type="date" value="2024-01-01" />
+              </div>
+              <div>
+                <label for="fim">Fim</label>
+                <input id="fim" name="fim" type="date" value="2024-12-31" />
+              </div>
+              <div>
+                <label for="filiais">Filiais</label>
+                <input id="filiais" name="filiais" type="number" min="1" value="5" />
+              </div>
+              <div>
+                <label for="seed2">Seed</label>
+                <input id="seed2" name="seed" type="number" value="42" />
+              </div>
+            </div>
+            <div class="actions">
+              <button type="submit">Gerar Compras (ZIP)</button>
+            </div>
+            <div class="note">Saída: compras.csv e compras.xlsx</div>
+          </form>
+        </section>
+      </div>
+
+      <p class="note">Proteção: HTTP Basic. Defina <code>DBGEN_PASSWORD</code> (e opcionalmente <code>DBGEN_USER</code>) no servidor.</p>
+    </div>
+  </body>
+  </html>
+
